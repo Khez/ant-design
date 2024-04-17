@@ -3,7 +3,7 @@ import * as React from 'react';
 import { ConfigContext } from '../config-provider';
 import useFlexGapSupport from '../_util/hooks/useFlexGapSupport';
 import type { Breakpoint, ScreenMap } from '../_util/responsiveObserve';
-import ResponsiveObserve, { responsiveArray } from '../_util/responsiveObserve';
+import useResponsiveObserve, { responsiveArray } from '../_util/responsiveObserve';
 import { tuple } from '../_util/type';
 import RowContext from './RowContext';
 
@@ -99,9 +99,11 @@ const Row = React.forwardRef<HTMLDivElement, RowProps>((props, ref) => {
 
   const gutterRef = React.useRef<Gutter | [Gutter, Gutter]>(gutter);
 
+  const responsiveObserve = useResponsiveObserve();
+
   // ================================== Effect ==================================
   React.useEffect(() => {
-    const token = ResponsiveObserve.subscribe(screen => {
+    const token = responsiveObserve.subscribe((screen) => {
       setCurScreens(screen);
       const currentGutter = gutterRef.current || 0;
       if (
@@ -112,7 +114,7 @@ const Row = React.forwardRef<HTMLDivElement, RowProps>((props, ref) => {
         setScreens(screen);
       }
     });
-    return () => ResponsiveObserve.unsubscribe(token);
+    return () => responsiveObserve.unsubscribe(token);
   }, []);
 
   // ================================== Render ==================================
